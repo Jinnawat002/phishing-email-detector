@@ -1,0 +1,103 @@
+.system-evaluation {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.evaluation-header {
+  text-align: center;
+  margin-bottom: 40px;
+  color: white;
+}
+
+.evaluation-header h1 {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.evaluation-header p {
+  font-size: 16px;
+  opacity: 0.9;
+}
+
+.evaluation-form {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+}
+
+.rating-section {
+  margin-bottom: 40px;
+}
+
+.rating-section h3 {
+  color: #1f2937;
+  margin-bottom: 30px;
+  font-size: 20px;
+}
+
+.rating-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.rating-item:last-child {
+  border-bottom: none;
+}
+
+.rating-item label {
+  font-weight: 600;
+  color: #374151;
+  flex: 1;
+}
+
+.stars {
+  display: flex;
+  gap: 8px;
+  margin: 0 20px;
+}
+
+.star {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 50%;
+  transition: transform 0.2s;
+  color: #d1d5db;
+}
+
+.star:hover {
+  transform: scale(1.2);
+}
+
+.star.filled {
+  color: #fbbf24;
+}
+
+.rating-text {
+  min-width: 80px;
+  font-size: 14px;
+  color: #6b7280;
+  text-align: right;
+}
+
+.comments-section {
+  margin-bottom: 30px;
+}
+
+.comments-section h3 {
+  color: #1f2937;
+  margin-bottom: 15px;
+  font-size: 18px;
+}
+
+.comments-section textarea {
+  width: 100%;
+  padding: 15px;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+}

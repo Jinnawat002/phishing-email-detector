@@ -1,0 +1,502 @@
+.auth-container {
+  min-height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 15px;
+  position: relative;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.auth-background {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 16px;
+  padding: 40px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  width: 100%;
+  max-width: 450px;
+}
+
+.auth-card {
+  width: 100%;
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.auth-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border-radius: 50%;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+.auth-header h2 {
+  color: #2d3748;
+  font-size: 28px;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.auth-header p {
+  color: #718096;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.form-group label {
+  color: #2d3748;
+  font-weight: 500;
+  font-size: 15px;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-wrapper input {
+  width: 100%;
+  padding: 14px 50px 14px 50px;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #2d3748;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.input-wrapper input:focus {
+  outline: none;
+  border-color: #667eea;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.input-wrapper input::placeholder {
+  color: #a0aec0;
+}
+
+.input-icon {
+  position: absolute;
+  left: 18px;
+  color: #718096;
+  z-index: 1;
+  font-size: 18px;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 18px;
+  background: none;
+  border: none;
+  color: #718096;
+  cursor: pointer;
+  padding: 8px;
+  z-index: 1;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.password-toggle:hover {
+  color: #2d3748;
+  background: #f7fafc;
+}
+
+.auth-button {
+  padding: 16px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.auth-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+  background: linear-gradient(135deg, #5a67d8, #6b46c1);
+}
+
+.auth-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.auth-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: #a0aec0;
+  box-shadow: none;
+}
+
+/* --- CSS ที่เพิ่มเข้ามาสำหรับ Google Login --- */
+
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: #a0aec0;
+  margin: 24px 0;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.divider:not(:empty)::before {
+  margin-right: 1em;
+}
+
+.divider:not(:empty)::after {
+  margin-left: 1em;
+}
+
+.google-auth-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 16px;
+  border: 2px solid #e2e8f0;
+  background-color: white;
+  color: #4a5568;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.google-auth-button:hover:not(:disabled) {
+  border-color: #cbd5e0;
+  background-color: #f7fafc;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.google-auth-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: #f7fafc;
+}
+
+.google-icon {
+  width: 20px;
+  height: 20px;
+}
+/* --- สิ้นสุดส่วนที่เพิ่มเข้ามา --- */
+
+
+.error-message {
+  padding: 14px;
+  background: #fed7d7;
+  border: 1px solid #fc8181;
+  border-radius: 10px;
+  color: #c53030;
+  font-size: 14px;
+  text-align: center;
+}
+
+.success-message {
+  padding: 14px;
+  background: #c6f6d5;
+  border: 1px solid #68d391;
+  border-radius: 10px;
+  color: #22543d;
+  font-size: 14px;
+  text-align: center;
+}
+
+.auth-footer {
+  text-align: center;
+  margin-top: 25px;
+}
+
+.auth-footer p {
+  color: #718096;
+  font-size: 15px;
+}
+
+.auth-link {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 500;
+  margin-left: 5px;
+  transition: color 0.2s ease;
+}
+
+.auth-link:hover {
+  color: #5a67d8;
+  text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .auth-container {
+    padding: 10px;
+  }
+  
+  .auth-background {
+    padding: 30px 25px;
+    border-radius: 16px;
+    max-width: none;
+    margin: 0 5px;
+  }
+  
+  .auth-icon {
+    width: 70px;
+    height: 70px;
+    margin-bottom: 15px;
+  }
+  
+  .auth-header h2 {
+    font-size: 24px;
+  }
+  
+  .auth-header p {
+    font-size: 14px;
+  }
+  
+  .input-wrapper input {
+    padding: 12px 45px;
+    font-size: 16px; /* ป้องกัน zoom ใน iOS */
+  }
+  
+  .input-icon {
+    left: 15px;
+    font-size: 16px;
+  }
+  
+  .password-toggle {
+    right: 15px;
+  }
+  
+  .auth-button, .google-auth-button { /* <-- เพิ่ม .google-auth-button */
+    padding: 14px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-container {
+    padding: 8px;
+  }
+  
+  .auth-background {
+    padding: 25px 20px;
+    border-radius: 12px;
+  }
+  
+  .auth-form {
+    gap: 20px;
+  }
+  
+  .auth-header h2 {
+    font-size: 22px;
+  }
+  
+  .input-wrapper input {
+    padding: 12px 40px;
+  }
+}
+
+@media (max-width: 360px) {
+  .auth-background {
+    padding: 20px 15px;
+  }
+  
+  .auth-icon {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .auth-header h2 {
+    font-size: 20px;
+  }
+}
+
+/* Large screens */
+@media (min-width: 1200px) {
+  .auth-background {
+    padding: 50px;
+    max-width: 500px;
+  }
+  
+  .auth-header h2 {
+    font-size: 32px;
+  }
+  
+  .auth-header p {
+    font-size: 17px;
+  }
+  
+  .input-wrapper input {
+    padding: 16px 55px;
+    font-size: 17px;
+  }
+  
+  .auth-button, .google-auth-button { /* <-- เพิ่ม .google-auth-button */
+    padding: 18px;
+    font-size: 17px;
+  }
+}
+
+/* Extra small height screens (landscape mobile) */
+@media (max-height: 600px) and (orientation: landscape) {
+  .auth-container {
+    padding: 10px;
+  }
+  
+  .auth-background {
+    padding: 20px;
+  }
+  
+  .auth-icon {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 10px;
+  }
+  
+  .auth-header h2 {
+    font-size: 20px;
+    margin-bottom: 5px;
+  }
+  
+  .auth-header {
+    margin-bottom: 20px;
+  }
+  
+  .auth-form {
+    gap: 15px;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .auth-container {
+    background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+  }
+  
+  .auth-background {
+    background: rgba(26, 32, 44, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  }
+  
+  .auth-header h2 {
+    color: #f7fafc;
+  }
+  
+  .auth-header p, .auth-footer p {
+    color: #cbd5e0;
+  }
+  
+  .form-group label {
+    color: #f7fafc;
+  }
+  
+  .input-wrapper input {
+    background: #2d3748;
+    border-color: #4a5568;
+    color: #f7fafc;
+  }
+  
+  .input-wrapper input:focus {
+    border-color: #667eea;
+    background: #2d3748;
+  }
+  
+  .input-wrapper input::placeholder {
+    color: #718096;
+  }
+  
+  .input-icon {
+    color: #a0aec0;
+  }
+  
+  .password-toggle {
+    color: #a0aec0;
+  }
+  
+  .password-toggle:hover {
+    color: #f7fafc;
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  /* --- Dark Mode สำหรับ Google Login --- */
+  .divider {
+    color: #718096;
+  }
+
+  .divider::before,
+  .divider::after {
+    border-color: #4a5568;
+  }
+
+  .google-auth-button {
+    background-color: #2d3748;
+    border-color: #4a5568;
+    color: #e2e8f0;
+  }
+
+  .google-auth-button:hover:not(:disabled) {
+    background-color: #4a5568;
+    border-color: #636e72;
+  }
+  /* --- สิ้นสุดส่วน Dark Mode --- */
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .auth-background {
+    border: 2px solid rgba(0, 0, 0, 0.3);
+  }
+  
+  .input-wrapper input {
+    border: 2px solid #2d3748;
+  }
+  
+  .input-wrapper input:focus {
+    border-color: #667eea;
+    border-width: 3px;
+  }
+  
+  /* --- High Contrast สำหรับ Google Button --- */
+  .google-auth-button {
+    border-width: 2px;
+  }
+}

@@ -1,0 +1,67 @@
+/* theme.css */
+:root {
+  /* Color Palette */
+  --primary-color-start: #667eea;
+  --primary-color-end: #764ba2;
+  --primary-gradient: linear-gradient(135deg, var(--primary-color-start), var(--primary-color-end));
+  
+  --accent-color: #10b981; /* A nice accent for success states, icons, etc. */
+
+  --text-primary: #2d3748;
+  --text-secondary: #718096;
+  
+  --surface-bg: rgba(255, 255, 255, 0.95);
+  --surface-border-color: rgba(255, 255, 255, 0.8);
+  --surface-bg-hover: rgba(255, 255, 255, 1);
+  
+  --background-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+  --error-bg: #fed7d7;
+  --error-border: #fc8181;
+  --error-text: #c53030;
+
+  --success-bg: #c6f6d5;
+  --success-border: #68d391;
+  --success-text: #22543d;
+
+  /* Typography */
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  --font-size-base: 16px;
+  --line-height-base: 1.6;
+
+  /* Spacing (4px scale) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  /* Borders & Shadows */
+  --border-radius-medium: 12px;
+  --border-radius-large: 16px;
+  --shadow-medium: 0 8px 25px rgba(102, 126, 234, 0.2);
+  --shadow-large: 0 20px 60px rgba(0, 0, 0, 0.1);
+
+  /* Transitions */
+  --transition-base: all 0.3s ease;
+}
+
+/* Dark Mode Theme */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text-primary: #f7fafc;
+    --text-secondary: #cbd5e0;
+    
+    --surface-bg: rgba(26, 32, 44, 0.95);
+    --surface-border-color: rgba(255, 255, 255, 0.1);
+    --surface-bg-hover: rgba(45, 55, 72, 1);
+
+    --background-gradient: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+    
+    --shadow-large: 0 20px 60px rgba(0, 0, 0, 0.3);
+  }
+}

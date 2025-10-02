@@ -1,0 +1,37 @@
+# --- Secrets ---
+# ไฟล์ที่เก็บข้อมูลลับทั้งหมด ห้ามขึ้น Git เด็ดขาด!!!
+.env
+phishing-detector-frontend/.env.local
+phishing_detector/.env.local
+
+# --- Dependencies ---
+# โฟลเดอร์ที่เก็บ library ต่างๆ จะถูกติดตั้งใหม่เสมอ ไม่ต้องเก็บ
+phishing-detector-frontend/node_modules/
+phishing_detector/phishing_detector_env/
+
+# --- Build artifacts & Generated files ---
+# ไฟล์ที่ถูกสร้างขึ้นมาตอน build หรือ run ไม่ใช่ source code
+phishing-detector-frontend/dist/
+phishing_detector/staticfiles/
+phishing_detector/media/
+
+# --- Python / Django specific ---
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+
+# --- Node specific ---
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json # บางทีมอาจจะเก็บ แต่สำหรับโปรเจคคนเดียวมักจะละไว้
+
+# --- OS / Editor specific ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log
