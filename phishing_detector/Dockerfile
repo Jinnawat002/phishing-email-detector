@@ -8,15 +8,16 @@ ENV PYTHONUNBUFFERED 1
 # Set work directory
 WORKDIR /app
 
-# Install dependencies
+# Copy requirements and the new build script
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+COPY build.sh .
+RUN chmod +x ./build.sh # ทำให้ script ทำงานได้
 
-# Copy project code, including model files (.pkl)
+# Copy project code
 COPY . .
 
 # Expose port
 EXPOSE 8000
 
-# Run gunicorn
+# Run gunicorn (Start command)
 CMD ["gunicorn", "--bind", "0.0.0.0:8000", "phishing_detector.wsgi:application"]
