@@ -288,6 +288,7 @@
   font-size: 14px;
   position: relative;
   overflow: hidden;
+  text-decoration: none;
 }
 
 .nav-item::before {
@@ -369,41 +370,60 @@
   transform: translateX(4px);
 }
 
+/* --- NEW: Mobile Sidebar Close Button --- */
+.sidebar-close-btn {
+  display: none;
+  background: rgba(107, 114, 128, 0.1);
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #6b7280;
+  transition: all 0.2s ease;
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
 
-/* --- EDITED BLOCK --- */
+.sidebar-close-btn:hover {
+  background: rgba(107, 114, 128, 0.15);
+  color: #374151;
+}
+
 /* Responsive Design for Tablets */
 @media (max-width: 1024px) {
-  /* ทำให้ Sidebar หุบอัตโนมัติที่ขนาดจอนี้ */
   .sidebar {
-    width: 80px; /* ความกว้างตอนหุบ */
+    width: 80px;
   }
 
-  /* ซ่อนข้อความและข้อมูล user */
   .sidebar .brand-text,
   .sidebar .user-info,
   .sidebar .nav-label {
     opacity: 0;
     visibility: hidden;
-    pointer-events: none; /* ป้องกันการคลิกโดนสิ่งที่มองไม่เห็น */
+    pointer-events: none;
     transform: translateX(-10px);
   }
 
-  /* จัดไอคอนให้อยู่ตรงกลาง */
   .sidebar .sidebar-brand,
-  .sidebar .sidebar-user,
-  .sidebar .nav-item,
-  .sidebar .logout-btn {
+  .sidebar .sidebar-user {
     justify-content: center;
   }
   
-  /* ปรับ padding ของ nav-item เพื่อความสวยงาม */
+  /* ★★★ แก้ไขตรงนี้: ให้ nav-item และ logout-btn จัดกึ่งกลางพอดี ★★★ */
   .sidebar .nav-item,
   .sidebar .logout-btn {
-    padding: 14px 0;
+    justify-content: center;
+    padding: 14px 0; /* ไม่มี padding ซ้าย-ขวา */
+  }
+  
+  /* ★★★ ให้ไอคอนอยู่ตรงกลางเสมอ ★★★ */
+  .sidebar .nav-icon {
+    margin: 0 auto;
   }
 }
-/* --- END EDITED BLOCK --- */
-
 
 @media (max-width: 768px) {
   .mobile-menu-toggle {
@@ -414,8 +434,6 @@
     display: block;
   }
 
-  /* --- MODIFIED: Adjustments for Mobile Sidebar --- */
-  
   .sidebar {
     transform: translateX(-100%);
     width: 280px;
@@ -426,32 +444,37 @@
     transform: translateX(0);
   }
   
-  /* --- NEW: Re-style the header for mobile --- */
+  /* ★★★ แก้ไข sidebar-header ให้ปุ่มปิดอยู่ขวาสุด ★★★ */
   .sidebar-header {
-    /* ทำให้โลโก้และปุ่มปิดอยู่คนละฝั่ง */
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 16px 12px 16px 20px; /* ปรับ padding ให้สวยงาม */
+    justify-content: space-between; /* แยกซ้าย-ขวา */
+    padding: 20px;
+    gap: 12px; /* เว้นระยะระหว่าง brand กับปุ่ม */
+  }
+  
+  /* ★★★ ให้ brand ขยายเต็มที่ ★★★ */
+  .sidebar-brand {
+    flex: 1; /* ขยายเต็มพื้นที่ที่เหลือ */
+    justify-content: flex-start !important; /* บังคับให้ชิดซ้าย */
   }
 
-  /* --- NEW: Show the new close button on mobile --- */
+  /* ★★★ แสดงปุ่มปิดในมือถือ ★★★ */
   .sidebar-close-btn {
-    display: flex; /* แสดงปุ่มปิด */
+    display: flex;
   }
 
-  /* --- MODIFIED: Hide the desktop toggle button on mobile --- */
+  /* ★★★ ซ่อนปุ่ม toggle เดสก์ท็อป ★★★ */
   .sidebar-toggle {
     display: none;
   }
   
-  /* --- NEW: Adjust user section padding --- */
   .sidebar-user {
-    /* ย้ายไอคอนผู้ใช้มาไว้ตรงนี้แทน และปรับสไตล์ให้ดูดี */
     padding: 20px;
     gap: 15px;
   }
   
+  /* ★★★ คืนค่าให้ sidebar เต็มรูปแบบในมือถือ ★★★ */
   .sidebar.collapsed {
     width: 280px;
     transform: translateX(-100%);
@@ -469,13 +492,19 @@
     transform: translateX(0);
   }
   
-  .sidebar.collapsed .sidebar-brand,
-  .sidebar.collapsed .sidebar-user,
+  .sidebar.collapsed .sidebar-brand {
+    justify-content: flex-start !important;
+  }
+  
+  .sidebar.collapsed .sidebar-user {
+    justify-content: flex-start;
+  }
+  
+  /* ★★★ คืนค่า padding ปกติ ★★★ */
   .sidebar.collapsed .nav-item,
   .sidebar.collapsed .logout-btn {
     justify-content: flex-start;
-    padding-left: 16px; 
-    padding-right: 16px;
+    padding: 14px 16px;
   }
 }
 
@@ -491,10 +520,9 @@
     height: 15px;
   }
   
-  /* ทำให้ sidebar กว้างเต็มจอแนวนอน */
   .sidebar {
-    width: 85vw; /* กว้าง 85% ของจอ ไม่เต็ม 100% เพื่อความสวยงาม */
-    max-width: 320px; /* แต่ไม่เกิน 320px */
+    width: 85vw;
+    max-width: 320px;
   }
   
   .sidebar-header {
@@ -515,6 +543,30 @@
   
   .sidebar-footer {
     padding: 16px 20px;
+  }
+}
+
+/* Main Content Styles */
+.main-content {
+  margin-left: 280px;
+  padding: 24px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  width: calc(100% - 280px);
+  box-sizing: border-box;
+}
+
+@media (max-width: 1024px) {
+  .main-content {
+    margin-left: 80px;
+    width: calc(100% - 80px);
+  }
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 0;
+    width: 100%;
+    padding: 16px;
   }
 }
 
@@ -551,12 +603,12 @@
   }
 
   .nav-item {
-    color: #cbd5e1; /* เปลี่ยนสีตัวอักษรตั้งต้นใน dark mode */
+    color: #cbd5e1;
   }
   
   .brand-text span,
   .user-info span {
-    color: #94a3b8; /* ปรับให้สว่างขึ้นเล็กน้อย */
+    color: #94a3b8;
   }
   
   .nav-item:hover {
@@ -565,11 +617,12 @@
   }
 
   .nav-item.active {
-    color: #60a5fa; /* ปรับสี active ใน dark mode */
-    background: none;
+    color: #60a5fa;
+    background: rgba(59, 130, 246, 0.2);
   }
   
-  .sidebar-toggle:hover {
+  .sidebar-toggle:hover,
+  .sidebar-close-btn:hover {
     background: rgba(255, 255, 255, 0.1);
     color: #f1f5f9;
   }
@@ -617,54 +670,3 @@
     border: 2px solid #000;
   }
 }
-
-/* --- NEW: Mobile Sidebar Close Button --- */
-.sidebar-close-btn {
-  display: none; /* ซ่อนปุ่มนี้ในเวอร์ชันเดสก์ท็อป */
-  background: none;
-  border: none;
-  font-size: 24px;
-  color: #6b7280;
-  cursor: pointer;
-  padding: 8px;
-  border-radius: 50%;
-  transition: all 0.2s ease;
-  width: 40px;
-  height: 40px;
-  align-items: center;
-  justify-content: center;
-}
-
-.sidebar-close-btn:hover {
-  background: rgba(0, 0, 0, 0.05);
-  color: #1f2937;
-}
-
-
-/* --- ADDED BLOCK --- */
-/* สไตล์สำหรับเนื้อหาหลัก (Main Content) */
-.main-content {
-  margin-left: 280px; /* ความกว้างเริ่มต้นของ Sidebar */
-  padding: 24px;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  width: calc(100% - 280px); /* ทำให้ความกว้างเต็มพื้นที่ที่เหลือ */
-  box-sizing: border-box; /* ป้องกันปัญหา padding ทำให้ layout เกิน */
-}
-
-/* เมื่อหน้าจอแคบลง (Tablet) */
-@media (max-width: 1024px) {
-  .main-content {
-    margin-left: 80px; /* ความกว้างตอนหุบของ Sidebar */
-    width: calc(100% - 80px);
-  }
-}
-
-/* เมื่อเป็นหน้าจอมือถือ (Sidebar ถูกซ่อน) */
-@media (max-width: 768px) {
-  .main-content {
-    margin-left: 0; /* ไม่มี margin เพราะ Sidebar หายไปแล้ว */
-    width: 100%;
-    padding: 16px;
-  }
-}
-/* --- END ADDED BLOCK --- */

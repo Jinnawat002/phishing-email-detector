@@ -111,7 +111,7 @@
 
 .password-toggle {
   position: absolute;
-  right: 20px; /* เพิ่มระยะห่างจากขอบขวาเข้ามาอีกเล็กน้อย */
+  right: 32px; /* เพิ่มระยะห่างจากขอบขวาเข้ามาอีกเล็กน้อย */
   top: 50%; /* จัดตำแหน่งให้อยู่กึ่งกลางแนวตั้ง */
   transform: translateY(-50%); /* ใช้คู่กับ top: 50% เพื่อให้กลางเป๊ะ */
   background: none;
@@ -127,9 +127,14 @@
   justify-content: center;
 }
 
+.password-toggle:focus {
+  outline: none;
+  box-shadow: none rgba(102, 126, 234, 0.2);
+}
+
 .password-toggle:hover {
   color: #2d3748;
-  background: #f7fafc;
+  background: transparent;
 }
 
 .auth-button {
@@ -307,7 +312,7 @@
   }
   
   .password-toggle {
-    right: 15px;
+    right: 22px;
   }
   
   .auth-button, .google-auth-button { /* <-- เพิ่ม .google-auth-button */
@@ -459,7 +464,7 @@
   
   .password-toggle:hover {
     color: #f7fafc;
-    background: rgba(255, 255, 255, 0.1);
+    background: transparent;
   }
 
   /* --- Dark Mode สำหรับ Google Login --- */
