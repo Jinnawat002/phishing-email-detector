@@ -58,7 +58,7 @@ const Sidebar = ({ isMobileOpen, toggleMobileSidebar }) => {
           )}
         </div>
         
-        {/* ปุ่ม Toggle สำหรับ Desktop */}
+        {/* ปุ่ม Toggle สำหรับ Desktop (ซ่อนในมือถือ) */}
         <button 
           className="sidebar-toggle" 
           onClick={() => setIsCollapsed(!isCollapsed)}
@@ -66,7 +66,7 @@ const Sidebar = ({ isMobileOpen, toggleMobileSidebar }) => {
           {isCollapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
         </button>
         
-        {/* ★★★ ปุ่มปิดสำหรับมือถือ (แสดงเฉพาะใน Mobile) ★★★ */}
+        {/* ปุ่มปิดสำหรับมือถือ (ซ่อนในเดสก์ท็อป) */}
         <button 
           className="sidebar-close-btn" 
           onClick={toggleMobileSidebar}

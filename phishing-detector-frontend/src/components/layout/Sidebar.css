@@ -412,16 +412,16 @@
     justify-content: center;
   }
   
-  /* ★★★ แก้ไขตรงนี้: ให้ nav-item และ logout-btn จัดกึ่งกลางพอดี ★★★ */
+  /* ★★★ เอา padding ออกจาก li เพื่อให้ไอคอนตรงกัน ★★★ */
+  .sidebar-nav li {
+    padding: 0;
+  }
+  
+  /* ★★★ ให้ nav-item และ logout-btn จัดกึ่งกลางพอดี ★★★ */
   .sidebar .nav-item,
   .sidebar .logout-btn {
     justify-content: center;
-    padding: 14px 0; /* ไม่มี padding ซ้าย-ขวา */
-  }
-  
-  /* ★★★ ให้ไอคอนอยู่ตรงกลางเสมอ ★★★ */
-  .sidebar .nav-icon {
-    margin: 0 auto;
+    padding: 14px 0;
   }
 }
 
@@ -498,6 +498,11 @@
   
   .sidebar.collapsed .sidebar-user {
     justify-content: flex-start;
+  }
+  
+  /* ★★★ คืนค่า padding ของ li กลับมา ★★★ */
+  .sidebar-nav li {
+    padding: 0 16px;
   }
   
   /* ★★★ คืนค่า padding ปกติ ★★★ */
