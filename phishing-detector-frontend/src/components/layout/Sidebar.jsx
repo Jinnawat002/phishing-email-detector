@@ -67,12 +67,12 @@ const Sidebar = ({ isMobileOpen, toggleMobileSidebar }) => {
         </button>
         
         {/* ปุ่มปิดสำหรับมือถือ (ซ่อนในเดสก์ท็อป) */}
-        <button 
+        {/* <button 
           className="sidebar-close-btn" 
           onClick={toggleMobileSidebar}
         >
           <X size={20} />
-        </button>
+        </button> */}
       </div>
 
       <div className="sidebar-user">
