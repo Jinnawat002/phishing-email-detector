@@ -111,7 +111,9 @@
 
 .password-toggle {
   position: absolute;
-  right: 18px;
+  right: 20px; /* เพิ่มระยะห่างจากขอบขวาเข้ามาอีกเล็กน้อย */
+  top: 50%; /* จัดตำแหน่งให้อยู่กึ่งกลางแนวตั้ง */
+  transform: translateY(-50%); /* ใช้คู่กับ top: 50% เพื่อให้กลางเป๊ะ */
   background: none;
   border: none;
   color: #718096;
@@ -120,6 +122,9 @@
   z-index: 1;
   border-radius: 6px;
   transition: all 0.2s ease;
+  display: flex; /* เพิ่มเพื่อให้ icon อยู่ตรงกลางสวยงาม */
+  align-items: center;
+  justify-content: center;
 }
 
 .password-toggle:hover {

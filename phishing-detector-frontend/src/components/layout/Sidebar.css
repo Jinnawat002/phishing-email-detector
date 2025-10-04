@@ -314,7 +314,7 @@
 }
 
 .nav-item.active {
-  background: rgba(59, 130, 246, 0.12);
+  background: none;
   color: #3b82f6;
   font-weight: 600;
 }
@@ -413,6 +413,8 @@
   .sidebar-overlay {
     display: block;
   }
+
+  /* --- MODIFIED: Adjustments for Mobile Sidebar --- */
   
   .sidebar {
     transform: translateX(-100%);
@@ -424,7 +426,32 @@
     transform: translateX(0);
   }
   
-  /* แก้ไขส่วนนี้เพื่อให้ .collapsed ไม่มีผลตอนเป็น mobile */
+  /* --- NEW: Re-style the header for mobile --- */
+  .sidebar-header {
+    /* ทำให้โลโก้และปุ่มปิดอยู่คนละฝั่ง */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 12px 16px 20px; /* ปรับ padding ให้สวยงาม */
+  }
+
+  /* --- NEW: Show the new close button on mobile --- */
+  .sidebar-close-btn {
+    display: flex; /* แสดงปุ่มปิด */
+  }
+
+  /* --- MODIFIED: Hide the desktop toggle button on mobile --- */
+  .sidebar-toggle {
+    display: none;
+  }
+  
+  /* --- NEW: Adjust user section padding --- */
+  .sidebar-user {
+    /* ย้ายไอคอนผู้ใช้มาไว้ตรงนี้แทน และปรับสไตล์ให้ดูดี */
+    padding: 20px;
+    gap: 15px;
+  }
+  
   .sidebar.collapsed {
     width: 280px;
     transform: translateX(-100%);
@@ -447,13 +474,8 @@
   .sidebar.collapsed .nav-item,
   .sidebar.collapsed .logout-btn {
     justify-content: flex-start;
-    padding-left: 16px; /* ใช้ padding เดิม */
+    padding-left: 16px; 
     padding-right: 16px;
-  }
-  
-  /* Hide desktop toggle in mobile */
-  .sidebar-toggle {
-    display: none;
   }
 }
 
@@ -544,7 +566,7 @@
 
   .nav-item.active {
     color: #60a5fa; /* ปรับสี active ใน dark mode */
-    background: rgba(59, 130, 246, 0.2);
+    background: none;
   }
   
   .sidebar-toggle:hover {
@@ -594,6 +616,28 @@
   .mobile-menu-toggle {
     border: 2px solid #000;
   }
+}
+
+/* --- NEW: Mobile Sidebar Close Button --- */
+.sidebar-close-btn {
+  display: none; /* ซ่อนปุ่มนี้ในเวอร์ชันเดสก์ท็อป */
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar-close-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: #1f2937;
 }
 
 
