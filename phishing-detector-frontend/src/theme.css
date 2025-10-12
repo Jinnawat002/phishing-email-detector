@@ -1,7 +1,7 @@
 :root {
   /* Color Palette */
   /* --- MODIFIED: Changed to a professional blue theme --- */
-  --primary-color-start: #3b82f6;
+  --primary-color-start: #3f86f7;
   --primary-color-end: #2563eb;
   --primary-gradient: linear-gradient(135deg, var(--primary-color-start), var(--primary-color-end));
   
