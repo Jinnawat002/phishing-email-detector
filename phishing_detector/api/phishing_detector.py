@@ -135,7 +135,7 @@ class PhishingDetector:
         print("\n[ขั้นตอนที่ 2/4] กำลังดาวน์โหลดและเตรียมข้อมูลจาก Hugging Face...")
         df_hf = pd.DataFrame()
         try:
-            hf_dataset = load_dataset("kmack/Phishing_urls", split='train')
+            hf_dataset = load_dataset("kmack/Phishing_urls", split='train[:50000]')
             df_hf_all = hf_dataset.to_pandas()
             if 'text' in df_hf_all and 'label' in df_hf_all:
                 df_hf = df_hf_all[['text', 'label']].rename(columns={'text': 'email'})
