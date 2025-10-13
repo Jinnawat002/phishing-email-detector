@@ -8,18 +8,18 @@ from urllib.parse import urlparse
 import nltk
 import numpy as np
 import pandas as pd
-from bs4 import BeautifulSoup  # --- [NEW] --- สำหรับลบ HTML tags
+from bs4 import BeautifulSoup
 
 # --- ADDED ---: เพิ่ม import สำหรับ Hugging Face Datasets
 from datasets import load_dataset
 
 from nltk.corpus import stopwords
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.linear_model import LogisticRegression  # --- [MODIFIED] --- เปลี่ยนโมเดล
+from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import (accuracy_score, classification_report,
                              confusion_matrix)
 from sklearn.model_selection import train_test_split
-from scipy.sparse import hstack  # --- [NEW] --- สำหรับรวม sparse matrix กับ dense array
+from scipy.sparse import hstack
 
 # Download NLTK data if not already present
 try:
@@ -30,7 +30,6 @@ except LookupError:
 
 class PhishingDetector:
     def __init__(self):
-        # --- [MODIFIED] --- ปรับปรุง Keywords และเพิ่มตัวแปรสำหรับ Feature ใหม่ๆ
         self.suspicious_keywords = [
             'urgent', 'verify', 'click here', 'limited time', 'act now',
             'congratulations', 'winner', 'prize', 'free', 'offer',
@@ -44,73 +43,62 @@ class PhishingDetector:
             'shortened.link', 'short.link'
         ]
 
-        # --- [MODIFIED] --- ปรับ Vectorizer และเปลี่ยน Model
         self.vectorizer = TfidfVectorizer(
-            max_features=2500,  # เพิ่มจำนวน features
+            max_features=2500,
             stop_words='english',
-            ngram_range=(1, 2)  # พิจารณาคำติดกัน 2 คำด้วย
+            ngram_range=(1, 2)
         )
         self.model = LogisticRegression(
             solver='liblinear',
             random_state=42,
-            class_weight='balanced',  # ช่วยจัดการข้อมูลที่ไม่สมดุล
-            C=5 # Regularization parameter
+            class_weight='balanced',
+            C=5
         )
         self.is_trained = False
 
-    # --- [NEW] --- ฟังก์ชันทำความสะอาดข้อความ
     def _clean_text(self, text):
-        """
-        ทำความสะอาดข้อความ: ลบ HTML, punctuation, และทำให้เป็นตัวพิมพ์เล็ก
-        """
         if not isinstance(text, str):
             return ""
-        # 1. ใช้ BeautifulSoup เพื่อดึงข้อความจาก HTML
         soup = BeautifulSoup(text, "html.parser")
         text = soup.get_text()
-        # 2. ทำให้เป็นตัวพิมพ์เล็ก
         text = text.lower()
-        # 3. ลบ Punctuation
         text = text.translate(str.maketrans('', '', string.punctuation))
         return text
 
+    # --- [NEW] --- ฟังก์ชันสำหรับตรวจสอบ URL อย่างปลอดภัย
+    def _safe_url_parse(self, url):
+        """
+        ฟังก์ชัน urlparse ที่ดักจับ ValueError เพื่อป้องกันโปรแกรมล่ม
+        """
+        try:
+            # คืนค่า network location (domain) ของ URL
+            return urlparse(url).netloc
+        except ValueError:
+            # หากเจอ URL ที่มีปัญหา (เช่น Invalid IPv6) ให้คืนค่าเป็น string ว่าง
+            # เพื่อให้การตรวจสอบ 'in' ทำงานต่อไปได้โดยไม่เกิด error
+            return ""
+
     # --- [MODIFIED] --- ปรับปรุงการสกัด Feature ให้ซับซ้อนขึ้น
     def extract_features(self, content):
-        """
-        สกัด Feature ที่สร้างขึ้นเอง (Engineered Features) จากเนื้อหาอีเมล
-        จะ return เป็น numpy array ของตัวเลข
-        """
         if not isinstance(content, str):
             content = ""
 
         urls = re.findall(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', content)
-        
-        # Feature 1: จำนวน URL ทั้งหมด
+
         url_count = len(urls)
-        
-        # Feature 2: มี IP Address ใน URL หรือไม่ (1=มี, 0=ไม่มี)
         has_ip_url = 1 if any(re.match(r"http[s]?://\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}", url) for url in urls) else 0
 
-        # Feature 3: มี URL ย่อส่วนหรือไม่
-        has_shortened_url = 1 if any(any(sus_domain in urlparse(url).netloc for sus_domain in self.suspicious_domains) for url in urls) else 0
-        
-        # Feature 4: มีสัญลักษณ์ '@' ใน URL หรือไม่ (เทคนิคหลอกลวง)
-        has_at_in_url = 1 if any('@' in url for url in urls) else 0
-        
-        # Feature 5: จำนวนคำต้องสงสัยที่พบ
-        suspicious_keyword_count = sum(1 for keyword in self.suspicious_keywords if keyword in content.lower())
-        
-        # Feature 6: จำนวน HTML tags (บ่งบอกความซับซ้อนที่อาจไม่จำเป็น)
-        html_tag_count = len(re.findall(r"<[^>]+>", content))
-        
-        # Feature 7: จำนวนตัวเลขทั้งหมด
-        digit_count = sum(c.isdigit() for c in content)
+        # --- [FIXED] --- แก้ไขจุดที่เกิด Error โดยเรียกใช้ _safe_url_parse
+        # แทนที่จะเรียกใช้ urlparse(url).netloc โดยตรง
+        has_shortened_url = 1 if any(any(sus_domain in self._safe_url_parse(url) for sus_domain in self.suspicious_domains) for url in urls) else 0
 
-        # Feature 8: สัดส่วนตัวอักษรพิมพ์ใหญ่ (ตะโกน)
+        has_at_in_url = 1 if any('@' in url for url in urls) else 0
+        suspicious_keyword_count = sum(1 for keyword in self.suspicious_keywords if keyword in content.lower())
+        html_tag_count = len(re.findall(r"<[^>]+>", content))
+        digit_count = sum(c.isdigit() for c in content)
         content_len = len(content) if len(content) > 0 else 1
         uppercase_ratio = sum(1 for c in content if c.isupper()) / content_len
 
-        # คืนค่าเป็น list หรือ array ที่มีลำดับแน่นอน
         features = np.array([
             url_count,
             has_ip_url,
@@ -123,18 +111,16 @@ class PhishingDetector:
         ])
         return features
 
-    # --- [MODIFIED] --- กระบวนการเทรนใหม่ทั้งหมด
     def train_with_combined_data(self, local_csv_path=None, test_size=0.2, save_model=True):
         print("===== เริ่มกระบวนการเทรนโมเดล (ฉบับปรับปรุง) =====")
 
-        # ส่วนของการโหลดข้อมูล (ขั้นตอน 1-3) เหมือนเดิม...
-        # ... (คัดลอกส่วนโหลดข้อมูลจากโค้ดเดิมมาวางตรงนี้) ...
-        # --- 1. โหลดและเตรียมข้อมูลจากไฟล์ CSV เดิม ---
+        # --- 1. โหลดข้อมูลจากไฟล์ CSV ---
         print("\n[ขั้นตอนที่ 1/4] กำลังโหลดและเตรียมข้อมูลจากไฟล์ CSV...")
         df_local = pd.DataFrame()
         if local_csv_path is None:
+            # ปรับ path ให้ยืดหยุ่นมากขึ้น
             local_csv_path = self.find_dataset_file("Phishing_Email.csv")
-        
+
         if local_csv_path:
             loaded_df = self.load_dataset(local_csv_path)
             if loaded_df is not None and 'Email Text' in loaded_df and 'Email Type' in loaded_df:
@@ -145,7 +131,7 @@ class PhishingDetector:
         else:
             print("ไม่พบไฟล์ 'Phishing_Email.csv'")
 
-        # --- 2. โหลดและเตรียมข้อมูลจาก Hugging Face ---
+        # --- 2. โหลดข้อมูลจาก Hugging Face ---
         print("\n[ขั้นตอนที่ 2/4] กำลังดาวน์โหลดและเตรียมข้อมูลจาก Hugging Face...")
         df_hf = pd.DataFrame()
         try:
@@ -159,7 +145,7 @@ class PhishingDetector:
         except Exception as e:
             print(f"เกิดข้อผิดพลาดในการดาวน์โหลดข้อมูลจาก Hugging Face: {e}")
 
-        # --- 3. รวมข้อมูลที่เตรียมแล้ว ---
+        # --- 3. รวมข้อมูล ---
         print("\n[ขั้นตอนที่ 3/4] กำลังรวมข้อมูลที่จัดรูปแบบแล้ว...")
         if not df_local.empty or not df_hf.empty:
             combined_df = pd.concat([df_local, df_hf], ignore_index=True)
@@ -167,21 +153,15 @@ class PhishingDetector:
             print("ไม่สามารถโหลดข้อมูลจากแหล่งใดได้เลย สิ้นสุดการเทรน")
             return False
 
-        # --- 4. เตรียมข้อมูล, สร้าง Feature และเทรนโมเดล ---
+        # --- 4. เตรียมข้อมูลและเทรนโมเดล ---
         print("\n[ขั้นตอนที่ 4/4] กำลังเตรียมข้อมูล, สร้าง Feature และเทรนโมเดล...")
-        
-        # 4.1. Preprocess ข้อมูลพื้นฐาน
         texts, labels = self.preprocess_data(combined_df)
         if texts is None or labels is None:
             return False
 
-        # 4.2. สร้าง Engineered Features จาก 'texts' ดิบ (ก่อน clean)
         engineered_features = np.array([self.extract_features(text) for text in texts])
-
-        # 4.3. ทำความสะอาดข้อความสำหรับ TF-IDF
         cleaned_texts = [self._clean_text(text) for text in texts]
-        
-        # 4.4. แบ่งข้อมูลทั้งหมด (ทั้ง cleaned_texts, engineered_features, และ labels)
+
         X_train_text, X_test_text, \
         X_train_features, X_test_features, \
         y_train, y_test = train_test_split(
@@ -189,103 +169,75 @@ class PhishingDetector:
             test_size=test_size, random_state=42, stratify=labels
         )
         print(f"ข้อมูลการเทรน: {len(X_train_text)} รายการ, ข้อมูลการทดสอบ: {len(X_test_text)} รายการ")
-        
-        # 4.5. ทำ TF-IDF Vectorization
+
         X_train_tfidf = self.vectorizer.fit_transform(X_train_text)
         X_test_tfidf = self.vectorizer.transform(X_test_text)
 
-        # 4.6. *** จุดสำคัญ: รวม TF-IDF features กับ Engineered features ***
         X_train_combined = hstack([X_train_tfidf, X_train_features])
         X_test_combined = hstack([X_test_tfidf, X_test_features])
-        
-        # 4.7. เทรนโมเดลด้วยข้อมูลที่รวมแล้ว
+
         print("กำลังเทรนโมเดล Logistic Regression...")
         self.model.fit(X_train_combined, y_train)
 
-        # 4.8. ประเมินผล
         y_pred = self.model.predict(X_test_combined)
         accuracy = accuracy_score(y_test, y_pred)
-        
+
         print(f"\nผลการเทรน:\nAccuracy: {accuracy:.4f}")
         print("\nClassification Report:")
         print(classification_report(y_test, y_pred, target_names=['Safe', 'Phishing']))
-        
+
         self.is_trained = True
         if save_model:
             self.save_model()
         return True
 
-    # --- [MODIFIED] --- กระบวนการวิเคราะห์ใหม่ทั้งหมด
     def analyze_email(self, content):
         if not self.is_trained:
-            print("โมเดลยังไม่ได้เทรน ไม่สามารถวิเคราะห์ได้")
             return {'risk_score': 0.0, 'features': {}, 'recommendations': ['โมเดลยังไม่พร้อมใช้งาน']}
-
         try:
-            # 1. สกัด Engineered Features จาก content ดิบ
             engineered_features = self.extract_features(content)
-            
-            # 2. ทำความสะอาด content สำหรับ TF-IDF
             cleaned_content = self._clean_text(content)
-            
-            # 3. แปลงเป็น TF-IDF vector
             tfidf_features = self.vectorizer.transform([cleaned_content])
-            
-            # 4. *** จุดสำคัญ: รวม features ทั้งสองส่วนเข้าด้วยกัน ***
-            # ต้อง reshape engineered_features ให้เป็น 2D array
             combined_features = hstack([tfidf_features, engineered_features.reshape(1, -1)])
-            
-            # 5. ทำนายความน่าจะเป็น
-            # คะแนนความเสี่ยงคือความน่าจะเป็นที่จะเป็น Phishing (class 1)
             risk_score = self.model.predict_proba(combined_features)[0][1]
 
-            # สร้าง dictionary ของ features เพื่อแสดงผล
             feature_names = [
                 'url_count', 'has_ip_url', 'has_shortened_url', 'has_at_in_url',
                 'suspicious_keyword_count', 'html_tag_count', 'digit_count', 'uppercase_ratio'
             ]
             readable_features = dict(zip(feature_names, engineered_features))
-            
             recommendations = self.generate_recommendations(risk_score, readable_features)
-            
+
             return {
-                'risk_score': float(risk_score), 
-                'features': readable_features, 
+                'risk_score': float(risk_score),
+                'features': readable_features,
                 'recommendations': recommendations
             }
         except Exception as e:
             print(f"เกิดข้อผิดพลาดระหว่างวิเคราะห์: {e}")
             return {'risk_score': 0.0, 'features': {}, 'recommendations': [f'เกิดข้อผิดพลาด: {e}']}
 
-    # generate_recommendations, save_model, load_model, และฟังก์ชันอื่นๆ เหมือนเดิม
-    # ... (คัดลอกฟังก์ชันที่เหลือจากโค้ดเดิมมาวางตรงนี้) ...
+    # ฟังก์ชันอื่นๆ ที่เหลือ (load_dataset, preprocess_data, find_dataset_file, etc.)
+    # ... สามารถคัดลอกส่วนที่เหลือของคลาสมาวางต่อจากตรงนี้ได้เลย ...
     def load_dataset(self, file_path):
-        """
-        โหลด dataset จากไฟล์ต่างๆ (CSV, Excel, หรือ text)
-        """
         try:
-            # หาตำแหน่งไฟล์ที่เป็นไปได้
-            possible_paths = [
-                file_path,  # path ที่ระบุมาโดยตรง
-                os.path.join(os.getcwd(), file_path),  # current working directory
-            ]
-
             actual_path = None
+            possible_paths = [
+                file_path,
+                os.path.join(os.getcwd(), file_path),
+                os.path.join(os.getcwd(), 'data', file_path) # เพิ่มการค้นหาใน subfolder 'data'
+            ]
             for path in possible_paths:
                 if os.path.exists(path):
                     actual_path = path
                     break
-
             if actual_path is None:
                 raise FileNotFoundError(f"ไม่พบไฟล์ {file_path}")
 
             print(f"พบไฟล์ที่: {actual_path}")
-
-            # ตรวจสอบนามสกุลไฟล์
             file_extension = os.path.splitext(actual_path)[1].lower()
 
             if file_extension == '.csv':
-                # ลองหลาย encoding
                 encodings = ['utf-8', 'utf-8-sig', 'cp874', 'iso-8859-1', 'windows-1252']
                 df = None
                 for encoding in encodings:
@@ -296,11 +248,10 @@ class PhishingDetector:
                     except UnicodeDecodeError:
                         continue
                 if df is None:
-                    raise ValueError("ไม่สามารถอ่านไฟล์ CSV ได้ ลองเปลี่ยน encoding")
-            # ... ส่วนที่เหลือของ load_dataset ...
+                    raise ValueError("ไม่สามารถอ่านไฟล์ CSV ได้")
+                return df
             else:
                 raise ValueError(f"ไม่รองรับไฟล์นามสกุล {file_extension}")
-            return df
         except Exception as e:
             print(f"เกิดข้อผิดพลาดในการโหลดข้อมูล: {str(e)}")
             return None
@@ -310,8 +261,8 @@ class PhishingDetector:
             df.dropna(subset=['email', 'label'], inplace=True)
             if df['label'].dtype == 'object':
                 label_map = {
-                    'Phishing Email': 1, 'Safe Email': 0, 'phishing': 1, 
-                    'Phishing': 1, 'PHISHING': 1, 'safe': 0, 'Safe': 0, 
+                    'Phishing Email': 1, 'Safe Email': 0, 'phishing': 1,
+                    'Phishing': 1, 'PHISHING': 1, 'safe': 0, 'Safe': 0,
                     'SAFE': 0, 'legitimate': 0, 'Legitimate': 0, 'LEGITIMATE': 0,
                 }
                 df['label'] = df['label'].map(label_map)
@@ -324,6 +275,7 @@ class PhishingDetector:
             return None, None
 
     def find_dataset_file(self, filename="Phishing_Email.csv"):
+        # ค้นหาในตำแหน่งปัจจุบันและในโฟลเดอร์ 'data'
         search_paths = [filename, os.path.join('data', filename)]
         for path in search_paths:
             if os.path.exists(path):
@@ -352,7 +304,7 @@ class PhishingDetector:
         except Exception as e:
             print(f"เกิดข้อผิดพลาดในการโหลดโมเดล: {str(e)}")
             return False
-            
+
     def generate_recommendations(self, score, features):
         recommendations = []
         if score >= 0.8:
@@ -363,13 +315,12 @@ class PhishingDetector:
             recommendations.extend(['ความเสี่ยงปานกลาง', 'โปรดใช้ความระมัดระวังในการโต้ตอบ'])
         else:
             recommendations.extend(['ความเสี่ยงต่ำ', 'ดูเหมือนจะปลอดภัย แต่ควรตรวจสอบผู้ส่งเสมอ'])
-        
+
         if features.get('has_shortened_url', 0) > 0:
             recommendations.append('พบ URL ย่อส่วน โปรดระวังก่อนคลิก')
         if features.get('suspicious_keyword_count', 0) > 5:
             recommendations.append('มีคำที่สร้างความเร่งด่วนหรือน่าสงสัยจำนวนมาก')
         return recommendations
-
 
 # ส่วนที่ใช้ในการรันและทดสอบ (เหมือนเดิม แต่เรียกใช้ PhishingDetector ที่อัปเกรดแล้ว)
 phishing_detector = PhishingDetector()
